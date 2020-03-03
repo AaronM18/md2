@@ -1,5 +1,5 @@
 """
- Criptografía FI, UNAM
+ checkSumriptografía FI, UNAM
  Aarón Mejia Ortiz
  06.3.2020
  """
@@ -27,29 +27,28 @@ class MD2:
     messageLenght = len(message)
     bytesToAdd = 16 - (messageLenght % 16)
 
-    if bytesToAdd != 0:
-      message.extend([int(hex(bytesToAdd), 16) for i in range(bytesToAdd)])
+    message.extend([bytesToAdd for i in range(bytesToAdd)])
 
     return message
 
   def checksum(self, message: list) -> list:
-    N = len(message)
+    l = len(message)
     L = 0
-    C = [0 for i in range(16)]
+    checkSum = [0 for i in range(16)]
 
-    for i in range (N//16):
+    for i in range (l//16):
       for j in range(16):
         c = message[16*i + j]
-      C[j] = C[j] ^ self.S[ c ^ L ]
-      L = C[j]
+        checkSum[j] = checkSum[j] ^ self.S[ c ^ L ]
+        L = checkSum[j]
 
-    return message + C
+    return message + checkSum
 
   def hash(self, message: list) -> list:
-    N = len(message)
+    l = len(message)
     X = [0 for i in range(48)]
 
-    for i in range (N//16):
+    for i in range (l//16):
       for j in range(16):
         X[j + 16] = message[ 16*i + j]
         X[j + 32] = X[j + 16] ^ X[j]
@@ -58,9 +57,9 @@ class MD2:
         for k in range(48):
           t = X[k] ^ self.S[t]
           X[k] = t
-      t = (t + j) % 256
+        t = (t + j) % 256
 
-    return X
+    return ''.join([format(X[i], 'x').zfill(2) for i in range(16)])
 
   def sign(self, message: str) -> str:
     #print('message', message)
@@ -71,16 +70,16 @@ class MD2:
     paddedMessage = self.padding(hexMessage)
     #print('paddedMessage', paddedMessage)
 
-    messageWithChecksum = self.checksum(paddedMessage)
-    #print('messageWithChecksum', messageWithChecksum)
+    messageWithcheckSumhecksum = self.checksum(paddedMessage)
+    #print('messageWithcheckSumhecksum', messageWithcheckSumhecksum)
 
-    signature = self.hash(messageWithChecksum)
+    signature = self.hash(messageWithcheckSumhecksum)
     #print('signature', signature)
     
-    parsedSignature = [ chr(char) for char in signature ]
+    #parsedSignature = [ chr(char) for char in signature ]
     #print('parsedSignature', parsedSignature)
 
-    return ''.join(parsedSignature)
+    return signature
 
 def main():
   md2 = MD2()
