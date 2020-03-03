@@ -63,10 +63,9 @@ class MD2:
 
   def sign(self, message: str) -> str:
     #print('message', message)
-
+    message = message.strip('\"')
     hexMessage = [ord(char) for char in message]
     #print('hexMessage', hexMessage)
-
     paddedMessage = self.padding(hexMessage)
     #print('paddedMessage', paddedMessage)
 
@@ -75,9 +74,7 @@ class MD2:
 
     signature = self.hash(messageWithcheckSumhecksum)
     #print('signature', signature)
-    
-    #parsedSignature = [ chr(char) for char in signature ]
-    #print('parsedSignature', parsedSignature)
+
 
     return signature
 
